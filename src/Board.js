@@ -1,7 +1,6 @@
-import React, {Component} from "react";
-import Cell from "./Cell";
-import './Board.css';
-
+import React, { Component } from "react"
+import Cell from "./Cell"
+import "./Board.css"
 
 /** Game board of Lights out.
  *
@@ -30,17 +29,26 @@ import './Board.css';
  **/
 
 class Board extends Component {
-
-  constructor(props) {
-    super(props);
-
-    // TODO: set initial state
+  static defaultProps = {
+    nrow: 5,
+    ncols: 5,
+    chanceLightStartsOn: 0.25,
+  }
+  /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
+  state = {
+    hasWon: false,
+    board: this.createBoard(),
   }
 
-  /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
-
   createBoard() {
-    let board = [];
+    let board = []
+    for (let x = 0; x < this.props.nrow; x++) {
+      let row = []
+      for (let y = 0; y < this.props.ncols; y++) {
+        row.push(Math.random() < this.props.chanceLightStartsOn)
+      }
+      board.push(row)
+    }
     // TODO: create array-of-arrays of true/false values
     return board
   }
@@ -48,16 +56,15 @@ class Board extends Component {
   /** handle changing a cell: update board & determine if winner */
 
   flipCellsAround(coord) {
-    let {ncols, nrows} = this.props;
-    let board = this.state.board;
-    let [y, x] = coord.split("-").map(Number);
-
+    let { ncols, nrows } = this.props
+    let board = this.state.board
+    let [y, x] = coord.split("-").map(Number)
 
     function flipCell(y, x) {
       // if this coord is actually on board, flip it
 
       if (x >= 0 && x < ncols && y >= 0 && y < nrows) {
-        board[y][x] = !board[y][x];
+        board[y][x] = !board[y][x]
       }
     }
 
@@ -66,23 +73,26 @@ class Board extends Component {
     // win when every cell is turned off
     // TODO: determine is the game has been won
 
-    this.setState({board, hasWon});
+    // this.setState({board, hasWon});
   }
-
 
   /** Render game board or winning message. */
 
   render() {
+    let tableBoard = this.state.board.map((y, iy) => (
+      <tr key={iy}>
+        {y.map((x, ix) => (
+          <Cell key={`${iy}-${ix}`} isLit={x} />
+        ))}
+      </tr>
+    ))
 
-    // if the game is won, just show a winning msg & render nothing else
-
-    // TODO
-
-    // make table board
-
-    // TODO
+    return (
+      <table className="Board">
+        <tbody>{tableBoard}</tbody>
+      </table>
+    )
   }
 }
 
-
-export default Board;
+export default Board
