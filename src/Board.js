@@ -81,12 +81,7 @@ class Board extends Component {
   }
 
   /** Render game board or winning message. */
-
-  render() {
-    if (this.state.hasWon) {
-      return <h1>You win!</h1>
-    }
-
+  makeTable() {
     let tableBoard = this.state.board.map((y, iy) => (
       <tr key={iy}>
         {y.map((x, ix) => {
@@ -95,11 +90,31 @@ class Board extends Component {
         })}
       </tr>
     ))
-
     return (
       <table className="Board">
         <tbody>{tableBoard}</tbody>
       </table>
+    )
+  }
+
+  render() {
+    if (this.state.hasWon) {
+      return (
+        <div className="winner">
+          <div className="neon-orange">Voce</div>
+          <div className="neon-blue">Ganhou!</div>
+        </div>
+      )
+    }
+
+    return (
+      <div>
+        <div className="Board-title">
+          <div className="neon-orange">Lights</div>
+          <div className="neon-blue">Out</div>
+        </div>
+        {this.makeTable()}
+      </div>
     )
   }
 }
